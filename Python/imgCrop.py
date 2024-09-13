@@ -6,6 +6,7 @@ import sys
 try :
     if len(sys.argv) < 6:
        print("Usage: python imgCrop.py <x> <y> <w> <h> <img_file> [more img files]")
+       exit()
 
     from PIL import Image
 
@@ -15,26 +16,25 @@ try :
     w = int(sys.argv[3])
     h = int(sys.argv[4])
 
-    area = (x, y, x + w, y + h)
-    
     for i in range(5, len(sys.argv)):
         im = Image.open(sys.argv[i])
 
         print(i - 4, ": ", sep='', end='')
         if w == 0:
-            print("Error occured: width must be greater than 0.")
-            continue
-        elif (h == 0):
-            print("Error occured: height must be greater than 0.")
-            continue
-        elif (x + w > im.size[0]) or (y + h > im.size[1]):
-            print("Error occured: specified size is outside the image.")
+            w = im.size[0] - x
+        if h == 0:
+            h = im.size[1] - y
+
+        if (x + w > im.size[0]) or (y + h > im.size[1]):
+            print("Error occured: specified size is over the image.")
             continue
 
+        area = (x, y, x + w, y + h)
         im2 = im.crop(area)
-        dotIdx = sys.argv[i].rfind('.')
+        # dotIdx = sys.argv[i].rfind('.')
 
-        targetStr = sys.argv[i][:dotIdx] + '_crop' + sys.argv[i][dotIdx:len(sys.argv[i])]
+        # targetStr = 'crop_' + sys.argv[i][:dotIdx] + sys.argv[i][dotIdx:len(sys.argv[i])]
+        targetStr = 'crop_' + sys.argv[i]
         im2.save(targetStr)
         print(targetStr + " Cropped!")
 
